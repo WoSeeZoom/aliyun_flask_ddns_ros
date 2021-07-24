@@ -18,4 +18,4 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: my-docker-hub-namespace/my-docker-hub-repository:latest
+          tags: yangyang202107/aliyun_flask_ddns:latest
