@@ -1,27 +1,39 @@
-name: Publish Docker image
+  
+name: Docker Image CI
+
+#on:
+#  push:
+#    branches: [ main ]
+#  pull_request:
+#    branches: [ main ]
 on:
-  release:
-    types: [published]
+  repository_dispatch:
+  workflow_dispatch:
+    inputs:
+      ssh:
+        description: 'SSH connection to Actions'
+        required: false
+        default: 'false'
+#   watch:
+#     types: started
+
 jobs:
-  push_to_registry:
-    name: Push Docker image to GitHub Packages
+
+  build:
+
     runs-on: ubuntu-latest
-    permissions:
-      packages: write
-      contents: read
+    if: github.event.repository.owner.id == github.event.sender.id
+
     steps:
-      - name: Check out the repo
-        uses: actions/checkout@v2
-      - name: Log in to GitHub Docker Registry
-        uses: docker/login-action@v1
-        with:
-          registry: docker.pkg.github.com
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build container image
-        uses: docker/build-push-action@v2
-        with:
-          push: true
-          tags: |
-            docker.pkg.github.com/${{ github.repository }}/octo-image:${{ github.sha }}
-            docker.pkg.github.com/${{ github.repository }}/octo-image:${{ github.ref }}
+    - uses: actions/checkout@v2
+    - name: docker login
+      env:
+        DOCKER_USER: ${{secrets.DOCKER_USER}}
+        DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+      run: |
+        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD 
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag yangyang202107/aliyun_flask_ddns:latest
+      
+    - name: Docker Push
+      run: docker push yangyang202107/aliyun_flask_ddns
