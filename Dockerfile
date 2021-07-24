@@ -1,4 +1,3 @@
-#
 FROM python:alpine3.7
 RUN apk update && apk add --no-cache gcc g++ python3-dev unixodbc-dev
 
