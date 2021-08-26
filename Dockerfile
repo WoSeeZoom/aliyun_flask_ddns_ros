@@ -1,5 +1,5 @@
 #
-FROM python:3.9-alpine3.14
+FROM python:3.9
 RUN apk update && apk add --no-cache gcc g++ python3-dev unixodbc-dev
 
 RUN pip install --upgrade pip
