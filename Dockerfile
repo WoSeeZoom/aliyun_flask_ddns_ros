@@ -2,7 +2,10 @@
 FROM python:3.9-alpine3.14
 RUN apk update && apk add --no-cache gcc g++ python3-dev unixodbc-dev
 USER root
-RUN python -m pip install --upgrade pip && pip install aliyun-python-sdk-alidns && pip install flask
+RUN python -m pip install --upgrade pip
+RUN pip install aliyun-python-sdk-alidns
+RUN pip install flask
+RUN apk del tzdata && rm -rf /var/cache/apk/* && rm -rf /root/.cache && rm -rf /tmp/*
 #RUN python -m pip install --upgrade pip && pip install aliyun-python-sdk-alidns && pip install flask && apk del tzdata && rm -rf /var/cache/apk/* && rm -rf /root/.cache && rm -rf /tmp/*
 COPY app/ /app/
 WORKDIR /app
