@@ -2,8 +2,8 @@
 # 阿里云DNS动态解
 # 添加ros脚本
 ```
-:local id "***********"  #阿里云ID
-:local secret "FOrrT2HVWtkM3IPApm413CdR1qxv8c" #阿里云secret
+:local id ""  #阿里云ID
+:local secret "" #阿里云secret
 :local domain "baidu.com" #填入主域名，不要带www
 :local record "www" #填入需要解析的域名前缀 
 :local pppoe "pppoe-out1"
