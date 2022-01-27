@@ -1,8 +1,7 @@
-#
 FROM python:3.7-alpine
-RUN apk update && apk add --no-cache gcc g++ python3-dev unixodbc-dev
-RUN adduser -D myuser
-USER myuser
+#RUN apk update && apk add --no-cache gcc g++ python3-dev unixodbc-dev
+RUN apk update && apk upgrade
+
 RUN pip install --upgrade pip
 RUN pip install aliyun-python-sdk-alidns
 RUN pip install flask
@@ -12,3 +11,5 @@ COPY app/ /app/
 WORKDIR /app
 EXPOSE 80
 CMD ["python","flask_aliyun_ddns.py"]
+
+
