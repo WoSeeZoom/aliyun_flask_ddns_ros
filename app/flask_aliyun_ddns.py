@@ -9,7 +9,7 @@ access_key_id = os.environ['ACCESS_KEY_ID']
 access_key_secret = os.environ['ACCESS_KEY_SECRET']
 domain = os.environ['DOMAIN']
 subdomains = os.environ['SUBDOMAINS']
-subdomains = subdomains..split(',')
+subdomains = subdomains.split(',')
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == 'GET':  # 获取访问方式 GET
