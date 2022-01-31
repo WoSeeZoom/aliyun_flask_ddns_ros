@@ -2,31 +2,36 @@ from flask import Flask, request
 import os, json
 from aliyunsdkcore import client
 from aliyunsdkalidns.request.v20150109 import DescribeDomainRecordsRequest, UpdateDomainRecordRequest
- 
-app = Flask(__name__)
 
 access_key_id = os.environ['ACCESS_KEY_ID']
 access_key_secret = os.environ['ACCESS_KEY_SECRET']
 domain = os.environ['DOMAIN']
 subdomains = os.environ['SUBDOMAINS']
 subdomains = subdomains.split(',')
+auth_token = os.environ['AUTH_THOKEN']
+
+app = Flask(__name__)
+
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == 'GET':  # 获取访问方式 GET
         ip = request.args["ip"]
-        records = check_records()
-        update_list = []
-        for record in records['DomainRecords']['Record']:
-            if record["Type"] == 'A' and record['RR'] in subdomains:
-                if record['Value'] != ip:
-                    update_dns(ip, record, 'json')
-                    update_list.append(record['RR'])
-        if update_list:
-            msg = "domain:{},subdomain:{},update ok".format(domain, ','.join(update_list))
+        token = request.args['token']
+        if token == auth_token:
+            records = check_records()
+            update_list = []
+            for record in records['DomainRecords']['Record']:
+                if record["Type"] == 'A' and record['RR'] in subdomains:
+                    if record['Value'] != ip:
+                        update_dns(ip, record, 'json')
+                        update_list.append(record['RR'])
+            if update_list:
+                msg = "domain:{},subdomain:{},update ok".format(domain, ','.join(update_list))
+            else:
+                msg = "domain:{},all subdomain is ok".format(domain)
+            return msg
         else:
-            msg = "domain:{},subdomain:{},update ok".format(domain, ','.join(update_list))
-        return msg
-
+            return "update ddns failed"
 
 def check_records():
     clt = client.AcsClient(access_key_id, access_key_secret, 'cn-hangzhou')
@@ -53,7 +58,6 @@ def update_dns(ip, record, dns_format):
     request.set_accept_format(dns_format)
     result = clt.do_action_with_exception(request)
     return result
-
 
 if __name__ == '__main__':
     # 设置host，端口80，threaded=True 代表开启多线程
