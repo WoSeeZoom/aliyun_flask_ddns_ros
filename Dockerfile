@@ -1,5 +1,6 @@
 FROM python:3.7-alpine
-RUN apk update && apk add --no-cache gcc g++ python3-dev unixodbc-dev
+RUN apk update && apk add --no-cache gcc g++ python3-dev unixodbc-dev build-essential libssl-dev libffi-dev
+
 #RUN apk update && apk upgrade
 
 RUN pip install --upgrade pip
