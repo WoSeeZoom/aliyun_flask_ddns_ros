@@ -1,5 +1,5 @@
-FROM python:3.7-alpine
-RUN apk update && apk add --no-cache gcc g++ python3-dev unixodbc-dev manpages-dev
+FROM python:3.7-slim
+#RUN apk update && apk add --no-cache gcc g++ python3-dev unixodbc-dev manpages-dev
 
 #RUN apk update && apk upgrade
 
