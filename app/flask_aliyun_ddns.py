@@ -2,16 +2,14 @@ from flask import Flask, request
 import os, json
 from aliyunsdkcore import client
 from aliyunsdkalidns.request.v20150109 import DescribeDomainRecordsRequest, UpdateDomainRecordRequest
-
-
-rc_format = 'json'
+ 
 app = Flask(__name__)
 
 access_key_id = os.environ['ACCESS_KEY_ID']
 access_key_secret = os.environ['ACCESS_KEY_SECRET']
-domain = "yunys.top"
-subdomains = ['home', 'jp']
-
+domain = os.environ['DOMAIN']
+subdomains = os.environ['SUBDOMAINS']
+subdomains = subdomains..split(',')
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == 'GET':  # 获取访问方式 GET
@@ -21,12 +19,12 @@ def index():
         for record in records['DomainRecords']['Record']:
             if record["Type"] == 'A' and record['RR'] in subdomains:
                 if record['Value'] != ip:
-                    update_dns(ip, record, rc_format)
+                    update_dns(ip, record, 'json')
                     update_list.append(record['RR'])
         if update_list:
-            msg = "subdomain:{}更新完成".format(','.join(update_list))
+            msg = "domain:{},subdomain:{},update ok".format(domain, ','.join(update_list))
         else:
-            msg = "finish"
+            msg = "domain:{},subdomain:{},update ok".format(domain, ','.join(update_list))
         return msg
 
 
@@ -34,7 +32,7 @@ def check_records():
     clt = client.AcsClient(access_key_id, access_key_secret, 'cn-hangzhou')
     request = DescribeDomainRecordsRequest.DescribeDomainRecordsRequest()
     request.set_DomainName(domain)
-    request.set_accept_format(rc_format)
+    request.set_accept_format('json')
     result = clt.do_action_with_exception(request).decode('utf-8')
     result = json.JSONDecoder().decode(result)
     return result
@@ -58,5 +56,5 @@ def update_dns(ip, record, dns_format):
 
 
 if __name__ == '__main__':
-    # 设置host，端口8080，threaded=True 代表开启多线程
-    app.run(host='0.0.0.0', port=8080, debug=True, threaded=True)
+    # 设置host，端口80，threaded=True 代表开启多线程
+    app.run(host='0.0.0.0', port=80, debug=False, threaded=True)
