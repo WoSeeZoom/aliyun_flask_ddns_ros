@@ -8,7 +8,7 @@ access_key_secret = os.environ['ACCESS_KEY_SECRET']
 domain = os.environ['DOMAIN']
 subdomains = os.environ['SUBDOMAINS']
 subdomains = subdomains.split(',')
-auth_token = os.environ['AUTH_THOKEN']
+auth_token = os.environ['AUTH_TOKEN']
 
 app = Flask(__name__)
 
